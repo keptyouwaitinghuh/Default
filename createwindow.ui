@@ -1,0 +1,127 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<ui version="4.0">
+ <class>CreateWindow</class>
+ <widget class="QWidget" name="CreateWindow">
+  <property name="geometry">
+   <rect>
+    <x>0</x>
+    <y>0</y>
+    <width>592</width>
+    <height>609</height>
+   </rect>
+  </property>
+  <property name="windowTitle">
+   <string>Form</string>
+  </property>
+  <widget class="QWidget" name="gridLayoutWidget">
+   <property name="geometry">
+    <rect>
+     <x>80</x>
+     <y>30</y>
+     <width>421</width>
+     <height>501</height>
+    </rect>
+   </property>
+   <layout class="QGridLayout" name="gridLayout">
+    <item row="3" column="1">
+     <widget class="QLineEdit" name="headerField"/>
+    </item>
+    <item row="2" column="1">
+     <widget class="QLineEdit" name="execField"/>
+    </item>
+    <item row="4" column="1">
+     <widget class="QDateEdit" name="dateField"/>
+    </item>
+    <item row="5" column="0">
+     <widget class="QLabel" name="deadLineLabel">
+      <property name="text">
+       <string>Дэдлайн</string>
+      </property>
+     </widget>
+    </item>
+    <item row="1" column="1">
+     <widget class="QLineEdit" name="taskField"/>
+    </item>
+    <item row="4" column="0">
+     <widget class="QLabel" name="dateLabel">
+      <property name="text">
+       <string>Дата выдачи</string>
+      </property>
+     </widget>
+    </item>
+    <item row="1" column="0">
+     <widget class="QLabel" name="taskLabel">
+      <property name="text">
+       <string>Задание</string>
+      </property>
+     </widget>
+    </item>
+    <item row="2" column="0">
+     <widget class="QLabel" name="execLabel">
+      <property name="text">
+       <string>Исполнитель</string>
+      </property>
+     </widget>
+    </item>
+    <item row="5" column="1">
+     <widget class="QDateEdit" name="deadLineField"/>
+    </item>
+    <item row="3" column="0">
+     <widget class="QLabel" name="headerLabel">
+      <property name="text">
+       <string>Руководитель</string>
+      </property>
+     </widget>
+    </item>
+    <item row="0" column="1">
+     <widget class="QLineEdit" name="projectField"/>
+    </item>
+    <item row="6" column="0">
+     <widget class="QLabel" name="returnLabel">
+      <property name="text">
+       <string>Дата сдачи</string>
+      </property>
+     </widget>
+    </item>
+    <item row="0" column="0">
+     <widget class="QLabel" name="projectLabel">
+      <property name="text">
+       <string>Проект</string>
+      </property>
+     </widget>
+    </item>
+    <item row="6" column="1">
+     <widget class="QDateEdit" name="returnDateField"/>
+    </item>
+   </layout>
+  </widget>
+  <widget class="QWidget" name="">
+   <property name="geometry">
+    <rect>
+     <x>190</x>
+     <y>550</y>
+     <width>195</width>
+     <height>31</height>
+    </rect>
+   </property>
+   <layout class="QHBoxLayout" name="horizontalLayout">
+    <item>
+     <widget class="QPushButton" name="pushButton">
+      <property name="text">
+       <string/>
+      </property>
+     </widget>
+    </item>
+    <item>
+     <widget class="QPushButton" name="cancelButton">
+      <property name="text">
+       <string>Отмена</string>
+      </property>
+     </widget>
+    </item>
+   </layout>
+  </widget>
+ </widget>
+ <resources/>
+ <connections/>
+</ui>
