@@ -52,6 +52,8 @@ private slots:
 
     void on_listButton_clicked();
 
+    void on_openButton_clicked();
+
 private:
     Ui::MainWindow *ui;
     PList<Info> list;

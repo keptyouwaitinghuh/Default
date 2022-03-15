@@ -1,7 +1,7 @@
 #include "mainwindow.h"
 #include "ui_mainwindow.h"
 #include "createwindow.h"
-
+#include <QFileDialog>
 
 
 
@@ -32,6 +32,7 @@ void MainWindow::readData(Info &tmp)
 
 void MainWindow::readAllData()
 {
+    list.clear();
     while(!file.atEnd())
     {
         std::cout<<"read\n";
@@ -175,5 +176,19 @@ void MainWindow::on_listButton_clicked()
         ++i;
         ptr=ptr->next;
     }
+}
+
+
+void MainWindow::on_openButton_clicked()
+{
+    writeAllData();
+    QString toFile = QFileDialog::getOpenFileName(this, "Выберите файл",
+                                                      "D:\\Task1_4",
+                                                      "(*.data)");
+    file.close();
+    file.setFileName(toFile);
+    file.open(QIODevice::ReadWrite);
+    readAllData();
+    listToCombo();
 }
 

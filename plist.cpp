@@ -41,6 +41,12 @@ Nod<T>* PList<T>::getLast()
 }
 
 template<class T>
+void PList<T>::clear()
+{
+    while(first!=nullptr) remove_first();
+}
+
+template<class T>
 void PList<T>::push_back(T* data)
 {
     Nod<T>* tmp = new Nod<T>(data);

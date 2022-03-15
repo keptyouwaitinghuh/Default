@@ -37,6 +37,7 @@ public:
     quint16 getLength();
     Nod<T>* getFirst();
     Nod<T>* getLast();
+    void clear();
 
     Nod<T>* operator[] (unsigned int index);
 
