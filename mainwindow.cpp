@@ -2,56 +2,98 @@
 #include "ui_mainwindow.h"
 #include "createwindow.h"
 #include <QFileDialog>
+#include <QMessageBox>
 
 
 
 MainWindow::MainWindow(QWidget *parent)
     : QMainWindow(parent)
     , ui(new Ui::MainWindow)
+    , error(false)
 {
     ui->setupUi(this);
-    file.setFileName("file.data");
+    QString path=QFileDialog::getOpenFileName(this, "Выберите файл",
+                                              "D:\\Task1_4",
+                                              "(*.txt)");
+    file.setFileName(path);
     file.open(QIODevice::ReadWrite);
     stream.setDevice(&file);
+
     readAllData();
     listToCombo();
 }
 
-void MainWindow::readData(Info &tmp)
+bool MainWindow::readData(Info &tmp)
 {
+    bool r = 1;
+    QString str;
 
-    stream >> tmp.date;
-    stream >> tmp.deadline;
-    stream >> tmp.exec;
-    stream >> tmp.header;
-    stream >> tmp.project;
-    stream >> tmp.returnDate;
-    stream >> tmp.task;
+    str = stream.readLine();
+    qDebug() << str;
+    tmp.date = QDate::fromString(str, "dd.MM.yyyy");
+    r = r && tmp.date.isValid();
+    qDebug() << r;
 
+    str = stream.readLine();
+    qDebug() << str;
+    tmp.deadline = QDate::fromString(str, "dd.MM.yyyy");
+    r = r && tmp.deadline.isValid();
+
+    tmp.exec = stream.readLine();
+    tmp.header = stream.readLine();
+    tmp.project = stream.readLine();
+
+    str = stream.readLine();
+    qDebug() << str;
+    tmp.returnDate = QDate::fromString(str, "dd.MM.yyyy");
+    r = r && tmp.returnDate.isValid();
+
+    tmp.task = stream.readLine();
+
+    return r;
 }
 
 void MainWindow::readAllData()
 {
-    list.clear();
-    while(!file.atEnd())
+    int N=0;
+
+    while(!stream.atEnd())
     {
-        std::cout<<"read\n";
+        qDebug() << stream.readLine();
+        ++N;
+    }
+
+    qDebug() << N;
+    N = N/7;
+
+    list.clear();
+
+    stream.seek(0);
+
+    while(N)
+    {
         Info tmp;
-        readData(tmp);
+        bool c = readData(tmp);
+        if(!c)
+        {
+            QMessageBox::critical(this, "заебал", "Файл некорректен");
+            error = 1;
+            break;
+        }
         list.push_back(&tmp);
+        --N;
     }
 }
 
 void MainWindow::writeData(Info &tmp)
 {
-    stream << tmp.date;
-    stream << tmp.deadline;
-    stream << tmp.exec;
-    stream << tmp.header;
-    stream << tmp.project;
-    stream << tmp.returnDate;
-    stream << tmp.task;
-
+    stream << tmp.date.toString("dd.MM.yyyy") << '\n';
+    stream << tmp.deadline.toString("dd.MM.yyyy") << '\n';
+    stream << tmp.exec << '\n';
+    stream << tmp.header << '\n';
+    stream << tmp.project << '\n';
+    stream << tmp.returnDate.toString("dd.MM.yyyy") << '\n';
+    stream << tmp.task << '\n';
 }
 
 void MainWindow::writeAllData()
@@ -75,14 +117,13 @@ MainWindow::~MainWindow()
 
 void MainWindow::listToCombo()
 {
+    if(error) return;
     ui->comboBox->clear();
     Nod<Info> *ptr=list.getFirst();
     int i=0;
     while(ptr != nullptr)
     {
-        qDebug()<<"listToCombo" << i <<'\n';
         ui->comboBox->addItem(ptr->data.exec);
-        qDebug()<<"listToCombo" << i << ptr->data.exec;
         ptr=ptr->next;
         i++;
     }
@@ -90,16 +131,14 @@ void MainWindow::listToCombo()
 
 void MainWindow::showData(Info &data)
 {
-    qDebug() << "showData in";
+    if(error) return;
     ui->projectField->setText(data.project);
-    qDebug()<< data.exec;
     ui->taskField->setText(data.task);
     ui->execField->setText(data.exec);
     ui->headerField->setText(data.header);
     ui->dateField->setText(data.date.toString("dd.MM.yyyy"));
     ui->deadLineField->setText(data.deadline.toString("dd.MM.yyyy"));
     ui->returnDateField->setText(data.returnDate.toString("dd.MM.yyyy"));
-    qDebug() <<"showData out 1";
 }
 
 void MainWindow::clearText()
@@ -115,16 +154,15 @@ void MainWindow::clearText()
 
 void MainWindow::on_addButton_clicked()
 {
-    qDebug()<<"addButton\n";
+   if(error) return;
    static CreateWindow cw(*this, ADD);
    cw.show();
 }
 
 void MainWindow::on_deleteButton_clicked()
 {
-    qDebug() << "delete button clicked";
+    if(error) return;
     int g= ui->comboBox->currentIndex();
-    qDebug() << g;
     ui->comboBox->removeItem(g);
     list.remove(list[g]);
     listToCombo();
@@ -133,6 +171,7 @@ void MainWindow::on_deleteButton_clicked()
 
 void MainWindow::on_comboBox_currentIndexChanged(int index)
 {
+    if(error) return;
     if(list.getFirst() != nullptr && ui->comboBox->currentIndex() != -1)
         showData(list[index]->data);
 
@@ -142,12 +181,15 @@ void MainWindow::on_comboBox_currentIndexChanged(int index)
 
 void MainWindow::on_editButton_clicked()
 {
+    if(error) return;
+    if(list.is_empty()) return;
     static CreateWindow cw(*this, EDIT);
     cw.show();
 }
 
 void MainWindow::on_listWidget_itemClicked(QListWidgetItem *item)
 {
+    if(error) return;
     int i=ui->listWidget->currentRow();
     ui->comboBox->setCurrentIndex(searchResults[i]);
 }
@@ -155,6 +197,7 @@ void MainWindow::on_listWidget_itemClicked(QListWidgetItem *item)
 
 void MainWindow::on_searchButton_clicked()
 {
+    if(error) return;
     static CreateWindow cw(*this, SEARCH);
     cw.show();
 }
@@ -162,6 +205,7 @@ void MainWindow::on_searchButton_clicked()
 
 void MainWindow::on_listButton_clicked()
 {
+    if(error) return;
     ui->listWidget->clear();
     searchResults.clear();
     Nod<Info> *ptr = list.getFirst();
@@ -181,14 +225,21 @@ void MainWindow::on_listButton_clicked()
 
 void MainWindow::on_openButton_clicked()
 {
-    writeAllData();
+    qDebug() << "---------------------------------\nis error " << error;
+    if(!error) writeAllData();
+    clearText();
+    list.clear();
+    ui->comboBox->clear();
+    error = false;
     QString toFile = QFileDialog::getOpenFileName(this, "Выберите файл",
                                                       "D:\\Task1_4",
-                                                      "(*.data)");
+                                                      "(*.txt)");
     file.close();
     file.setFileName(toFile);
+    stream.setDevice(&file);
     file.open(QIODevice::ReadWrite);
     readAllData();
+    object
     listToCombo();
 }
 

@@ -1,6 +1,7 @@
 #include "createwindow.h"
 #include "ui_createwindow.h"
 #include "ui_mainwindow.h"
+#include <QMessageBox>
 
 CreateWindow::CreateWindow(MainWindow &wc, CreateWindowMode mode,QWidget *parent)
     : QWidget{parent}, w(wc), ui(new Ui::CreateWindow), mode(mode)
@@ -20,6 +21,7 @@ CreateWindow::CreateWindow(MainWindow &wc, CreateWindowMode mode,QWidget *parent
     }
     else if(mode == ADD)
     {
+        qDebug() << "A?";
         ui->projectField->clear();
         ui->taskField->clear();
         ui->execField->clear();
@@ -53,13 +55,12 @@ bool CreateWindow::everythingDefined()
     value=value && ui->execField->text()!="\0";
     value=value && ui->headerField->text()!="\0";
     value=value && ui->projectField->text()!="\0";
-
+    if(!value) QMessageBox::warning(this, "ёбаный твой рот", "введи сначала файл а потом ху");
     return value;
 }
 
 void CreateWindow::on_pushButton_clicked()
 {
-        std::cout<<"pushbutton\n";
         Info *tmp=new Info;
 
         tmp->project = ui->projectField->text();
@@ -69,10 +70,12 @@ void CreateWindow::on_pushButton_clicked()
         tmp->date = ui->dateField->date();
         tmp->deadline = ui->deadLineField->date();
         tmp->returnDate = ui->returnDateField->date();
+
         if(mode == ADD && everythingDefined())
         {
             w.list.push_back(tmp);
             w.listToCombo();
+            close();
         }
         else if(mode == EDIT && everythingDefined())
         {
@@ -80,13 +83,14 @@ void CreateWindow::on_pushButton_clicked()
             w.list[i]->data=*tmp;
             w.listToCombo();
             w.ui->comboBox->setCurrentIndex(i);
+            close();
         }
         else if(mode == SEARCH)
         {
             search(tmp);
+            close();
         }
 
-        close();
 }
 
 bool CreateWindow::check(Info dataIn, Info dataReal)
@@ -101,7 +105,6 @@ bool CreateWindow::check(Info dataIn, Info dataReal)
     retValue = retValue && (dataIn.header == "\0" || dataIn.header == dataReal.header);
     retValue = retValue && (dataIn.project == "\0" || dataIn.project == dataReal.project);
     retValue = retValue && (dataIn.task == "\0" || dataIn.task == dataReal.task);
-
     return retValue;
 }
 

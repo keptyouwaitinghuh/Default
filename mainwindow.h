@@ -26,7 +26,7 @@ public:
 
     void readAllData();
     void writeAllData();
-    void readData(Info &tmp);
+    bool readData(Info &tmp);
     void writeData(Info &data);
 
     void listToCombo();
@@ -57,8 +57,9 @@ private slots:
 private:
     Ui::MainWindow *ui;
     PList<Info> list;
-    QDataStream stream;
+    QTextStream stream;
     QFile file;
+    bool error;
     QVector<int> searchResults;
 };
 
