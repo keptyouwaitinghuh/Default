@@ -119,14 +119,18 @@ void MainWindow::listToCombo()
 {
     if(error) return;
     ui->comboBox->clear();
+    qDebug() <<"очистили";
     Nod<Info> *ptr=list.getFirst();
+    qDebug() << "присвоили";
     int i=0;
     while(ptr != nullptr)
     {
+        qDebug() << "зашли в запись в комбо";
         ui->comboBox->addItem(ptr->data.exec);
         ptr=ptr->next;
         i++;
     }
+    qDebug() << "Выход из листТо комбо";
 }
 
 void MainWindow::showData(Info &data)
@@ -239,7 +243,6 @@ void MainWindow::on_openButton_clicked()
     stream.setDevice(&file);
     file.open(QIODevice::ReadWrite);
     readAllData();
-    object
     listToCombo();
 }
 

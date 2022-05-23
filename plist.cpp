@@ -49,6 +49,7 @@ void PList<T>::clear()
 template<class T>
 void PList<T>::push_back(T* data)
 {
+    qDebug() << "Заход в пушбэк";
     Nod<T>* tmp = new Nod<T>(data);
 
     if (is_empty())
@@ -122,7 +123,7 @@ void PList<T>::remove_first()
 {
     if (!is_empty())
     {
-        if (length == 1)
+        if (first->next == nullptr)
         {
             delete first;
             first = nullptr;
@@ -168,7 +169,7 @@ quint16 PList<T>::getLength()
 template<class T>
 Nod<T>* PList<T>::operator[](unsigned int i)
 {
-    qDebug()<<'['<<i<<']';
+   // qDebug()<<'['<<i<<']';
     Nod<T>* ptr;
     if (length - 1 < i) return nullptr;
     unsigned short k = length - i - 1;
